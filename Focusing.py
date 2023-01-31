@@ -1,42 +1,31 @@
 import numpy as np
 import cv2
 
-def Focusing(img , img_depth , label : int , label_map , blur_strength = 1, split = 100):
-    ### 이미지 cv2로 불러와 array로 변환
-    img = cv2.imread(img, cv2.IMREAD_COLOR)
-    img_depth = cv2.imread(img_depth, cv2.IMREAD_ANYDEPTH)
-    label_map = cv2.imread(img_depth, cv2.IMREAD_UNCHANGED)
-
+def Focusing(img :np.ndarray , img_depth :np.ndarray , label : int , label_map :np.ndarray , blur_strength = 1, split = 100):
     layer = []
     depth_range = img_depth.max() - img_depth.min()
     sep = depth_range/split
+    label_depth_mean = label_depth(img_depth, label, label_map)
 
-    ### 포커싱 영역 저장
-    label_index = np.where(label_map == label)
+    ### 포커싱 영역 마스크 저장
     label_mask = np.where(label_map == label,1,0)
     label_mask = label_mask.astype(np.uint8)
-    foucsing_img = np.zeros(img.shape)
-    for i in range(len(label_index[0])):
-        foucsing_img[label_index[0][i]][label_index[1][i]] = img[label_index[0][i]][label_index[1][i]]
     
-    label_depth_mean = label_depth(img_depth, label, label_map)
+
     
-    ### split 수 만큼 layer 나누고 블러 처리
-    for k in range(split):
+    ### split 수 만큼 depth별로 나누고 영역 마스크 저장
+    for k in range(split+1):
 
-        img_index = np.where((img_depth >= img_depth.min()+sep*k) & (img_depth <= img_depth.min()+sep*(k+1)))
-        layer.append(np.zeros(img.shape))
+        layer.append(np.where((img_depth >= img_depth.min()+sep*k) & (img_depth < img_depth.min()+sep*(k+1)),1,0))
+        layer[k] = layer[k].astype(np.uint8)
 
-        for i in range(len(img_index[0])):
-            layer[k][img_index[0][i]][img_index[1][i]] = img[img_index[0][i]][img_index[1][i]]
-        
-        layer[k] = cv2.GaussianBlur(layer[k], (45, 45), abs((k-int(img_depth.min()-label_depth_mean/sep))/15*blur_strength))
-
-
+    ### 이미지 합성
+    ### 사진 전체를 blur 처리 한 후에 depth별로 나눈 마스크를 이용하여 해당 영역만 합성하는 방법 사용
+    ### 마지막 포커싱 영역 마스크 이용하여 이미지 합성
     result_img = np.zeros(img.shape)
-    for k in range(split):
-        result_img = result_img + layer[k]
-    cv2.copyTo(foucsing_img, label_mask, result_img)
+    for k in range(split+1):
+        result_img = cv2.copyTo(cv2.GaussianBlur(img, (45, 45), abs((k-int(img_depth.min()-label_depth_mean/sep))/15*blur_strength)), layer[k], result_img)
+    result_img = cv2.copyTo(img, label_mask, result_img)
     return result_img
 
 
