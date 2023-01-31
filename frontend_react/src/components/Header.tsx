@@ -4,7 +4,6 @@ import {
   Button,
   HStack,
   IconButton,
-  LightMode,
   useColorMode,
   useColorModeValue,
   useDisclosure,
