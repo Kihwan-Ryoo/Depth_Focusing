@@ -1,9 +1,12 @@
-import { FaHome, FaMoon } from "react-icons/fa";
+import { FaHome, FaMoon, FaSun } from "react-icons/fa";
 import {
   Box,
   Button,
   HStack,
   IconButton,
+  LightMode,
+  useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -15,6 +18,9 @@ export default function Header() {
     onClose: onLoginClose,
     onOpen: onLoginOpen,
   } = useDisclosure();
+  const { toggleColorMode } = useColorMode();
+  const logoColor = useColorModeValue("gray.900", "gray.50");
+  const Icon = useColorModeValue(FaMoon, FaSun);
 
   return (
     <HStack
@@ -23,16 +29,17 @@ export default function Header() {
       px={10}
       borderBottomWidth={1}
     >
-      <Box color="gray.900">
+      <Box color={logoColor}>
         <Link to={"/"}>
           <FaHome size={"48"} />
         </Link>
       </Box>
       <HStack spacing={2}>
         <IconButton
+          onClick={toggleColorMode}
           variant={"ghost"}
           aria-label="Toggle dark mode"
-          icon={<FaMoon />}
+          icon={<Icon />}
         />
         <Button onClick={onLoginOpen}>Log in</Button>
       </HStack>
