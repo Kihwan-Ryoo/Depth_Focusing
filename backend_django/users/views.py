@@ -66,8 +66,16 @@ class LogIn(APIView):
 
         if user:
             login(request, user)
-            return Response({"ok": "Welcomee"}, status=status.HTTP_200_OK)
+            return Response({"ok": "Success Login"}, status=status.HTTP_200_OK)
         else:
             return Response(
                 {"error": "wrong password"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class LogOut(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({"ok": "Success Logout"})
