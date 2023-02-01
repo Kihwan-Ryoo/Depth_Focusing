@@ -41,10 +41,10 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
         color = viridis(segment_id - 1)
         handles.append(mpatches.Patch(color=color, label=label))
     ax.legend(handles=handles, loc='center left', bbox_to_anchor=(1, 0.5))
+    print(f"choose a label to be focused (1 ~ {len(segments_info)})")
     plt.axis('off')
     plt.show()
-    print(f"choose a label to be focused (1 ~ {len(segments_info)})")
-
+    
 
 def blur_image(image_path, label, split_num):
     infer_helper = InferenceHelper(dataset='nyu')
