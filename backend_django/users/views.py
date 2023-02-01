@@ -143,6 +143,13 @@ class UserPhotos(APIView):
         except User.DoesNotExist:
             raise exceptions.NotFound
 
+    def get(self, request, pk):
+        user = self.get_object(pk)
+        if not request.user.is_authenticated:
+            raise exceptions.NotAuthenticated
+        serializer = serializers.UserPhotosSerializer(user)
+        return Response(serializer.data)
+
     def post(self, request, pk):
         user = self.get_object(pk)
         if not request.user.is_authenticated:
