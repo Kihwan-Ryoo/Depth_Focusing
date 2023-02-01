@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { githubLogIn } from "../api";
+import WatingPage from "../components/WatingPage";
 
 export default function GithubConfirm() {
   const { search } = useLocation();
@@ -21,18 +22,19 @@ export default function GithubConfirm() {
           description: "Log In Using Github",
         });
         queryClient.refetchQueries(["me"]);
-        navigate("/");
+        navigate("/users/1/photos");
       }
     }
   };
   useEffect(() => {
     confirmLogin();
   }, []);
-  return (
-    <VStack justifyContent={"center"} minH="70vh">
-      <Heading>Processing log in...</Heading>
-      <Text>Don't go anywhere.</Text>
-      <Spinner size="lg" />
-    </VStack>
-  );
+  // return (
+  //   <VStack justifyContent={"center"} minH="70vh">
+  //     <Heading>Processing log in...</Heading>
+  //     <Text>Don't go anywhere.</Text>
+  //     <Spinner size="lg" />
+  //   </VStack>
+  // );
+  return <WatingPage />;
 }

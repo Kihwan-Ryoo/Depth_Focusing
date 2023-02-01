@@ -74,7 +74,7 @@ export default function Header() {
       </Box>
       <HStack>
         <Text as="i" fontSize={45} fontWeight="bold">
-          Find Focus in your Image
+          Get Focus in your Image
         </Text>
       </HStack>
       <Flex gap={2} alignItems="center">
@@ -94,6 +94,9 @@ export default function Header() {
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={onLogOut}>Log out</MenuItem>
+                <Link to={"/users/1/photos"}>
+                  <MenuItem>Upload Photo</MenuItem>
+                </Link>
               </MenuList>
             </Menu>
           )

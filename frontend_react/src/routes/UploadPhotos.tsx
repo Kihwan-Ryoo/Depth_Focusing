@@ -36,6 +36,7 @@ export default function UploadPhotos() {
         status: "success",
         title: "Image uploaded",
         isClosable: true,
+        position: "bottom-right",
       });
     },
   });
@@ -95,7 +96,7 @@ export default function UploadPhotos() {
                   }
                   type="submit"
                   w="full"
-                  colorScheme={"red"}
+                  colorScheme={"teal"}
                 >
                   Upload photos
                 </Button>

@@ -7,6 +7,7 @@ import {
   HStack,
   Stack,
   Checkbox,
+  Heading,
 } from "@chakra-ui/react";
 
 interface IViewPhotosProps {
@@ -21,7 +22,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
       justifyContent={"space-between"}
       spacing="10"
     >
-      <Text fontSize={"4xl"}> Selected Image</Text>
+      <Heading textAlign={"center"}>Selected Image</Heading>
       <Image rounded={"lg"} src={imageUrl} />
       <Button w={"20%"} size={"lg"} colorScheme={"teal"} variant="solid">
         Continue
