@@ -36,6 +36,15 @@ export interface IUploadImageVarialbes {
   uploadURL: string;
 }
 
+export const getUploadURL = () =>
+  instance
+    .post(`medias/photos/get-url`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+
 export const uploadImage = ({ file, uploadURL }: IUploadImageVarialbes) => {
   const form = new FormData();
   form.append("file", file[0]);
@@ -47,3 +56,26 @@ export const uploadImage = ({ file, uploadURL }: IUploadImageVarialbes) => {
     })
     .then((response) => response.data);
 };
+
+export interface ICreatePhotoVariables {
+  description: string;
+  file: string;
+  userPk: string;
+}
+
+export const createPhoto = ({
+  description,
+  file,
+  userPk,
+}: ICreatePhotoVariables) =>
+  instance
+    .post(
+      `users/${userPk}/photos`,
+      { description, file },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

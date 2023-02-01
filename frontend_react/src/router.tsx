@@ -3,6 +3,7 @@ import Root from "./components/Root";
 import GithubConfirm from "./routes/GithubConfirm";
 import Home from "./routes/Home";
 import NotFound from "./routes/NotFound";
+import UploadPhotos from "./routes/UploadPhotos";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             element: <GithubConfirm />,
           },
         ],
+      },
+      {
+        path: "users/:userPk/photos",
+        element: <UploadPhotos />,
       },
     ],
   },

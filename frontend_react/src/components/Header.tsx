@@ -14,6 +14,8 @@ import {
   useColorModeValue,
   useDisclosure,
   useToast,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
@@ -70,6 +72,11 @@ export default function Header() {
           <FaHome size={"48"} />
         </Link>
       </Box>
+      <HStack>
+        <Text as="i" fontSize={45} fontWeight="bold">
+          Find Focus in your Image
+        </Text>
+      </HStack>
       <Flex gap={2} alignItems="center">
         <IconButton
           onClick={toggleColorMode}

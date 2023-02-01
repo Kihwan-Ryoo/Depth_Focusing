@@ -7,10 +7,11 @@ from rest_framework.views import APIView
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from . import serializers
 from .models import User
+from medias.serializers import PhotoSerializer
 
 
 # Create your views here.
@@ -131,3 +132,29 @@ class GithubLogIn(APIView):
                 return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserPhotos(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise exceptions.NotFound
+
+    def post(self, request, pk):
+        user = self.get_object(pk)
+        if not request.user.is_authenticated:
+            raise exceptions.NotAuthenticated
+
+        seralizer = PhotoSerializer(data=request.data)
+
+        if seralizer.is_valid():
+            photo = seralizer.save(
+                user=user,
+            )
+            seralizer = PhotoSerializer(photo)
+            return Response(seralizer.data)
+        else:
+            return Response(seralizer.errors)
