@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
   IconButton,
   Menu,
   MenuButton,
@@ -20,6 +19,8 @@ import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
 
 import useUser from "../lib/useUser";
+import { logOut } from "../api";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
@@ -31,21 +32,21 @@ export default function Header() {
   const { toggleColorMode } = useColorMode();
   const logoColor = useColorModeValue("gray.900", "gray.50");
   const Icon = useColorModeValue(FaMoon, FaSun);
-
   const toast = useToast();
+  const queryClient = useQueryClient();
   const onLogOut = async () => {
     const toastId = toast({
-      title: "Login out",
+      title: "Log out",
       status: "loading",
       position: "bottom-right",
     });
-    setTimeout(() => {
-      toast.update(toastId, {
-        status: "success",
-        title: "Done",
-        description: "Success Logout",
-      });
-    }, 5000);
+    await logOut();
+    queryClient.refetchQueries(["me"]);
+    toast.update(toastId, {
+      status: "success",
+      title: "Done!",
+      description: "See you later!",
+    });
   };
 
   return (
