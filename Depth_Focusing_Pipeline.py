@@ -41,6 +41,7 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
         color = viridis(segment_id - 1)
         handles.append(mpatches.Patch(color=color, label=label))
     ax.legend(handles=handles, loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.axis('off')
     plt.show()
     print(f"choose a label to be focused (1 ~ {len(segments_info)})")
 
@@ -55,7 +56,6 @@ def blur_image(image_path, label, split_num):
     # 초점 label을 기준으로 한 depth 차이 맵핑
     depth_std = abs(predicted_depth[0][0] - predicted_depth[0][0][prediction["segmentation"] == label].mean()) * np.array(prediction["segmentation"] != label).astype(int)
     dep_max = np.max(depth_std)
-    dep_min = np.min(depth_std) # 0
     
     channel1_label = prediction["segmentation"] == label
     label3channel = np.repeat(channel1_label[:,:,np.newaxis],3,-1)
@@ -67,18 +67,12 @@ def blur_image(image_path, label, split_num):
     k = 1
     for i in split:
         channel1_range = np.logical_and(depth_std > i, depth_std <= (i + dep_max/split_num))
-        channel3_range = np.repeat(channel1_range[:,:,np.newaxis],3,-1)
-        img_range = img * np.array(channel3_range)
-        img_range_blur = cv2.GaussianBlur(img_range, (k, k), 0)
+        img_range_mask = (np.ones(np.array(img).shape[:-1]) * np.array(channel1_range)).astype(np.uint8)
+        result = cv2.copyTo(cv2.GaussianBlur(np.array(img), (k, k), 3), img_range_mask, result)
         k += 2
-        result += img_range_blur
     result += img_filtered
-    
-    ### 몇 가지 트릭...
-    result += img_filtered * 0.1
-    result += np.array(img) * 0.4
-    result /= 1.6
 
+    plt.axis('off')
     plt.imshow(result.astype(np.uint16))
     plt.show()
 
