@@ -31,7 +31,7 @@ export default function UploadPhotos() {
   const toast = useToast();
   const [imageUrl, setImageUrl] = useState("");
   const createPhotoMutation = useMutation(createPhoto, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         status: "success",
         title: "Image uploaded",
@@ -45,8 +45,8 @@ export default function UploadPhotos() {
       if (userPk) {
         setImageUrl(`${result.variants[0]}`);
         createPhotoMutation.mutate({
-          description: " ",
-          file: `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${result.id}/public`,
+          description: "from react",
+          file: `https://imagedelivery.net/QuZC_XPqQ0puEDGDCfsphg/${result.id}/public`,
           userPk,
         });
       }

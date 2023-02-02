@@ -147,21 +147,27 @@ class UserPhotos(APIView):
         user = self.get_object(pk)
         if not request.user.is_authenticated:
             raise exceptions.NotAuthenticated
-        serializer = serializers.UserPhotosSerializer(user)
+        serializer = serializers.PhotoSerializer(
+            user.photos.all(),
+            many=True,
+        )
         return Response(serializer.data)
 
     def post(self, request, pk):
         user = self.get_object(pk)
+
         if not request.user.is_authenticated:
             raise exceptions.NotAuthenticated
 
         seralizer = PhotoSerializer(data=request.data)
+        print(f"request data : {request.data}")
 
         if seralizer.is_valid():
             photo = seralizer.save(
                 user=user,
             )
             seralizer = PhotoSerializer(photo)
+            print(seralizer.data)
             return Response(seralizer.data)
         else:
             return Response(seralizer.errors)
