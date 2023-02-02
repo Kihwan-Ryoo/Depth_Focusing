@@ -79,3 +79,29 @@ export const createPhoto = ({
       }
     )
     .then((response) => response.data);
+
+export const startModel = ({}) =>
+  instance
+    .post(
+      `backend restAPI`,
+      { 보낼: String, 인자들: String },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+export const getBlurImage = ({}) =>
+  instance
+    .post(
+      `backend restAPI`,
+      { row: Number, column: Number, label: Number },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

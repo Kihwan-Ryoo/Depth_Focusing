@@ -40,3 +40,8 @@ class GetUploadURL(APIView):
         one_time_url = one_time_url.json()
         result = one_time_url.get("result")
         return Response({"uploadURL": result.get("uploadURL")})
+
+
+class GetDeepLearningImage(APIView):
+    def post(self, request):
+        pass

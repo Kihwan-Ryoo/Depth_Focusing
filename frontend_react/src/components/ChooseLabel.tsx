@@ -11,13 +11,12 @@ import {
   useBoolean,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import ChooseLabel from "./ChooseLabel";
 
 interface IViewPhotosProps {
   imageUrl: string;
 }
 
-export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
+export default function ChooseLabel({ imageUrl }: IViewPhotosProps) {
   const [firstCheck, setFirstCheck] = useState(false);
 
   return (
@@ -41,9 +40,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
         }}
       >
         Continue
-      </Button>{" "}
-      /* ㄴㅁㅇ*/
-      {firstCheck ? <ChooseLabel imageUrl={imageUrl} /> : null}
+      </Button>
     </VStack>
   );
 }
