@@ -80,7 +80,7 @@ export const createPhoto = ({
     )
     .then((response) => response.data);
 
-export const startModel = ({}) =>
+export const getSegmentation = () =>
   instance
     .post(
       `backend restAPI`,
@@ -93,7 +93,7 @@ export const startModel = ({}) =>
     )
     .then((response) => response.data);
 
-export const getBlurImage = ({}) =>
+export const getBlurImage = () =>
   instance
     .post(
       `backend restAPI`,

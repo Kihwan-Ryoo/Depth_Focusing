@@ -9,14 +9,20 @@ import {
   Checkbox,
   Heading,
   useBoolean,
+  Input,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { ListFormat } from "typescript";
+import { getSegmentation } from "../api";
 
 interface IViewPhotosProps {
   imageUrl: string;
+  labels: object;
 }
 
-export default function ChooseLabel({ imageUrl }: IViewPhotosProps) {
+export default function ChooseLabel({ imageUrl, labels }: IViewPhotosProps) {
   const [firstCheck, setFirstCheck] = useState(false);
 
   return (
@@ -26,7 +32,7 @@ export default function ChooseLabel({ imageUrl }: IViewPhotosProps) {
       justifyContent={"space-between"}
       spacing="10"
     >
-      <Heading textAlign={"center"}>Selected Image</Heading>
+      <Heading textAlign={"center"}>Selected label</Heading>
       <Image rounded={"lg"} src={imageUrl} />
       <Button
         fontSize={25}
@@ -38,9 +44,7 @@ export default function ChooseLabel({ imageUrl }: IViewPhotosProps) {
         onClick={() => {
           setFirstCheck(true);
         }}
-      >
-        Continue
-      </Button>
+      ></Button>
     </VStack>
   );
 }

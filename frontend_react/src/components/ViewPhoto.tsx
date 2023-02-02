@@ -1,16 +1,7 @@
-import {
-  Box,
-  Image,
-  VStack,
-  Text,
-  Button,
-  HStack,
-  Stack,
-  Checkbox,
-  Heading,
-  useBoolean,
-} from "@chakra-ui/react";
+import { Image, VStack, Button, Heading, useToast } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { getSegmentation } from "../api";
 import ChooseLabel from "./ChooseLabel";
 
 interface IViewPhotosProps {
@@ -19,6 +10,21 @@ interface IViewPhotosProps {
 
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
   const [firstCheck, setFirstCheck] = useState(false);
+  const [segImg, setSegImg] = useState("");
+  const [labels, setLabels] = useState({ test1: "1", test2: "2", test3: "3" });
+  const toast = useToast();
+  // 백엔드 구현 후 완료될 부분
+  // const getSegmentatedImage = useMutation(getSegmentation, {
+  //   onSuccess: (data: any) => {
+  //     toast({
+  //       status: "success",
+  //       title: "Complete!",
+  //       position: "bottom",
+  //       isClosable: true,
+  //     });
+  //     setFirstCheck(true);
+  //   },
+  // });
 
   return (
     <VStack
@@ -38,12 +44,13 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
         variant="solid"
         onClick={() => {
           setFirstCheck(true);
+          // 백엔드 구현 후 활성화될 부분
+          // getSegmentatedImage.mutate();
         }}
       >
         Continue
-      </Button>{" "}
-      /* ㄴㅁㅇ*/
-      {firstCheck ? <ChooseLabel imageUrl={imageUrl} /> : null}
+      </Button>
+      {firstCheck ? <ChooseLabel imageUrl={imageUrl} labels={labels} /> : null}
     </VStack>
   );
 }
