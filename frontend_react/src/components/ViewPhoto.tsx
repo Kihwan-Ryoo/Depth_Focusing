@@ -1,4 +1,11 @@
-import { Image, VStack, Button, Heading, useToast } from "@chakra-ui/react";
+import {
+  Image,
+  VStack,
+  Button,
+  Heading,
+  useToast,
+  Box,
+} from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { getSegmentation } from "../api";
@@ -11,7 +18,7 @@ interface IViewPhotosProps {
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
   const [firstCheck, setFirstCheck] = useState(false);
   const [segImg, setSegImg] = useState("");
-  const [labels, setLabels] = useState({ test1: "1", test2: "2", test3: "3" });
+  const [labels, setLabels] = useState([1, 2, 3, 4, 5, 6, 7]);
   const toast = useToast();
   // 백엔드 구현 후 완료될 부분
   // const getSegmentatedImage = useMutation(getSegmentation, {
