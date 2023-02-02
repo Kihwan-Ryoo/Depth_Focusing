@@ -42,6 +42,9 @@ class GetUploadURL(APIView):
         return Response({"uploadURL": result.get("uploadURL")})
 
 
+# 우석님 파트
 class GetDeepLearningImage(APIView):
     def post(self, request):
+        # 이미지를 받아서 딥러닝 모델을 돌려준 결과를 response(프론트엔드에게)
+        #
         pass
