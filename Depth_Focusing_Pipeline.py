@@ -32,19 +32,21 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
     instances_counter = defaultdict(int)
     handles = []
     # for each segment, draw its legend
+    num = 1
     for segment in segments_info:
         segment_id = segment['id']
         segment_label_id = segment['label_id']
         segment_label = model.config.id2label[segment_label_id]
-        label = f"{segment_label}-{instances_counter[segment_label_id]}"
+        label = f"{num}. {segment_label}-{instances_counter[segment_label_id]}"
         instances_counter[segment_label_id] += 1
         color = viridis(segment_id - 1)
         handles.append(mpatches.Patch(color=color, label=label))
+        num += 1
     ax.legend(handles=handles, loc='center left', bbox_to_anchor=(1, 0.5))
-    print(f"choose a label to be focused (1 ~ {len(segments_info)})")
     plt.axis('off')
     plt.show()
-    
+    print(f"choose a label to be focused (1 ~ {len(segments_info)})")
+
 
 def blur_image(image_path, label, split_num):
     infer_helper = InferenceHelper(dataset='nyu')
@@ -83,5 +85,6 @@ draw_panoptic_segmentation(model, **prediction)
 
 # label = 6
 label = int(input()) # 사용자 입력
-split_num = 15 # 사용자 입력
+blurring_power = int(input("please choose the power of blurring (1 ~ 10)\n"))
+split_num = 5 * blurring_power
 blur_image(image_path, label, split_num)
