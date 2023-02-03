@@ -20,9 +20,20 @@ def predict_segmentation(image_path):
     with torch.no_grad():
         outputs = model(**inputs)
 
-    prediction = processor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-    print(prediction.keys()) # dict_keys(['segmentation', 'segments_info'])
-    return model, prediction
+    predicted_segmentation = processor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
+    print(predicted_segmentation.keys()) # dict_keys(['segmentation', 'segments_info'])
+    return model, predicted_segmentation
+
+
+def predict_depth(image_path):
+    infer_helper = InferenceHelper(dataset='nyu')
+    
+    # predict depth of a single pillow image
+    img = Image.open(image_path)  # any rgb pillow image
+    img = Image.fromarray(np.array(img)[:,:,0:3]) # for input format
+    bin_centers, predicted_depth = infer_helper.predict_pil(img)
+    
+    return predicted_depth
 
 
 def draw_panoptic_segmentation(model, segmentation, segments_info):
@@ -30,6 +41,8 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
     viridis = cm.get_cmap('viridis', torch.max(segmentation))
     fig, ax = plt.subplots()
     ax.imshow(segmentation)
+
+    ### legend (this part will be edited depending on web environment)
     instances_counter = defaultdict(int)
     handles = []
     # for each segment, draw its legend
@@ -44,24 +57,21 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
         handles.append(mpatches.Patch(color=color, label=label))
         num += 1
     ax.legend(handles=handles, loc='center left', bbox_to_anchor=(1, 0.5))
+    
     plt.axis('off')
     plt.show()
     print(f"choose a label to be focused (1 ~ {len(segments_info)})")
 
 
-def blur_image(image_path, label, split_num):
-    infer_helper = InferenceHelper(dataset='nyu')
-
-    # predict depth of a single pillow image
+def blur_image(image_path, predicted_depth, predicted_segmentation, label, split_num):
     img = Image.open(image_path)  # any rgb pillow image
     img = Image.fromarray(np.array(img)[:,:,0:3]) # for input format
-    bin_centers, predicted_depth = infer_helper.predict_pil(img)
     
     # 초점 label을 기준으로 한 depth 차이 맵핑
-    depth_std = abs(predicted_depth[0][0] - predicted_depth[0][0][prediction["segmentation"] == label].mean()) * np.array(prediction["segmentation"] != label).astype(int)
+    depth_std = abs(predicted_depth[0][0] - predicted_depth[0][0][predicted_segmentation["segmentation"] == label].mean()) * np.array(predicted_segmentation["segmentation"] != label).astype(int)
     dep_max = np.max(depth_std)
     
-    channel1_label = prediction["segmentation"] == label
+    channel1_label = predicted_segmentation["segmentation"] == label
     label3channel = np.repeat(channel1_label[:,:,np.newaxis],3,-1)
     img_filtered = img * np.array(label3channel)
 
@@ -82,11 +92,13 @@ def blur_image(image_path, label, split_num):
 
 
 image_path = "test_imgs/classroom__rgb_00283.jpg" # 사용자 입력
-model, prediction = predict_segmentation(image_path)
-draw_panoptic_segmentation(model, **prediction)
+model, predicted_segmentation = predict_segmentation(image_path)
+predicted_depth = predict_depth(image_path) # predicted_depth["segmentation"] 사용하면 torch.Tensor로 segmentation 결과 볼 수 있다.
+
+draw_panoptic_segmentation(model, **predicted_segmentation)
 
 # label = 6
 label = int(input()) # 사용자 입력
-blurring_power = int(input("please choose the power of blurring (1 ~ 10)\n"))
+blurring_power = int(input("please choose the power of blurring (1 ~ 10)\n")) # 사용자 입력 
 split_num = 5 * blurring_power
-blur_image(image_path, label, split_num)
+blur_image(image_path, predicted_depth, predicted_segmentation, label, split_num)
