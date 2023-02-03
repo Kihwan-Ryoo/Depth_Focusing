@@ -43,6 +43,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-cloudflare-images"
+version = "0.4.1"
+description = "Cloudflare Images integration for Django"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=3"
+requests = ">=2.20.0"
+
+[package.extras]
+dev = ["black (==22.6.0)", "tox (==3.25.1)"]
+
+[[package]]
 name = "django-cors-headers"
 version = "3.13.0"
 description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
@@ -144,7 +159,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c854f03867cbb7eceea93a703591c85386c79aba7e39cfc72be31f30b593c618"
+content-hash = "448f88cd47f392618514534b428d94905b8984d981fd4b7521d9f0106e140a6a"
 
 [metadata.files]
 asgiref = [
@@ -248,6 +263,9 @@ charset-normalizer = [
 django = [
     {file = "Django-4.1.5-py3-none-any.whl", hash = "sha256:4b214a05fe4c99476e99e2445c8b978c8369c18d4dea8e22ec412862715ad763"},
     {file = "Django-4.1.5.tar.gz", hash = "sha256:ff56ebd7ead0fd5dbe06fe157b0024a7aaea2e0593bb3785fb594cf94dad58ef"},
+]
+django-cloudflare-images = [
+    {file = "django-cloudflare-images-0.4.1.tar.gz", hash = "sha256:8a0a421a3061cbdde71372bf0d3ffcac1469ca40d9f2c2dbcbf551753b0a9951"},
 ]
 django-cors-headers = [
     {file = "django-cors-headers-3.13.0.tar.gz", hash = "sha256:f9dc6b4e3f611c3199700b3e5f3398c28757dcd559c2f82932687f3d0443cfdf"},

@@ -22,17 +22,17 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
   const [labels, setLabels] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const toast = useToast();
   // 백엔드 구현 후 완료될 부분
-  // const getSegmentatedImage = useMutation(getSegmentation, {
-  //   onSuccess: (data: any) => {
-  //     toast({
-  //       status: "success",
-  //       title: "Complete!",
-  //       position: "bottom",
-  //       isClosable: true,
-  //     });
-  //     setNext(true);
-  //   },
-  // });
+  const getSegmentatedImage = useMutation(getSegmentation, {
+    onSuccess: (data: any) => {
+      toast({
+        status: "success",
+        title: "Complete!",
+        position: "bottom",
+        isClosable: true,
+      });
+      setNext(true);
+    },
+  });
 
   return (
     <VStack

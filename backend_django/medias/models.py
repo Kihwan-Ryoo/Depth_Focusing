@@ -3,6 +3,8 @@ from django.db import models
 
 class Photo(models.Model):
     file = models.URLField()
+    seg_file = models.URLField(default="")
+    depth_file = models.URLField(default="")
     description = models.CharField(
         max_length=140,
     )

@@ -43,7 +43,6 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
         title: "seg",
         position: "bottom-right",
       });
-      console.log();
       // navigate(`/rooms/${data.id}`);
     },
   });
