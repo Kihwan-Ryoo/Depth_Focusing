@@ -8,7 +8,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 from users import serializers
+from users.models import User
 from .models import Photo
+from .serializers import PhotoSerializer
 
 
 class PhotoDetail(APIView):
@@ -48,4 +50,16 @@ class GetUploadURL(APIView):
 class GetDeepLearningImage(APIView):
     def post(self, request):
         # 이미지를 받아서 딥러닝 모델을 돌려준 결과를 response(프론트엔드에게)
-        pass
+
+        def get_object(self, pk):
+            try:
+                return User.objects.get(pk=pk)
+            except User.DoesNotExist:
+                raise NotFound
+
+        user = self.get_object(1)
+        # user => photo
+
+        serializer = PhotoSerializer(
+            user.photos.filter(),
+        )

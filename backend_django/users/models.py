@@ -17,4 +17,5 @@ class User(AbstractUser):
         default="",
     )
 
+    # 프로필 사진
     avatar = models.URLField(blank=True)

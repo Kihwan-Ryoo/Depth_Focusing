@@ -13,8 +13,10 @@ import {
   Grid,
   GridItem,
   FormControl,
+  useToast,
+  CheckboxGroup,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { Mutation, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ListFormat } from "typescript";
@@ -30,9 +32,25 @@ interface ILabels {
 }
 
 export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
-  const [firstCheck, setFirstCheck] = useState(false);
-  const { register, handleSubmit } = useForm<ILabels>();
+  const { register, handleSubmit, watch } = useForm<ILabels>();
+  const toast = useToast();
+  const mutation = useMutation(getSegmentation, {
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "seg",
+        position: "bottom-right",
+      });
+      console.log();
+      // navigate(`/rooms/${data.id}`);
+    },
+  });
 
+  const onSubmit = (data: ILabels) => {
+    console.log("asd");
+    mutation.mutate(data);
+  };
+  console.log(watch());
   return (
     <VStack
       my="10"
@@ -48,9 +66,13 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
         </GridItem>
         <GridItem>
           <FormControl>
-            <VStack spacing={5} align={"center"}>
+            <VStack
+              spacing={5}
+              align={"center"}
+              onSubmit={handleSubmit(onSubmit)}
+            >
               {labels?.map((label: number) => (
-                <Checkbox size={"lg"} {...register("check_labels")}>
+                <Checkbox key={label} size={"lg"} {...register("check_labels")}>
                   {label}
                 </Checkbox>
               ))}
@@ -58,18 +80,19 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
           </FormControl>
         </GridItem>
       </Grid>
+      {/* <Text>{watch()}</Text> */}
 
       <Button
         fontSize={25}
-        w={"25%"}
+        w={"50%"}
         h={"14"}
         size={"lg"}
         colorScheme={"teal"}
         variant="solid"
-        onClick={() => {
-          setFirstCheck(true);
-        }}
-      ></Button>
+        type="submit"
+      >
+        Get Focusing Image
+      </Button>
     </VStack>
   );
 }

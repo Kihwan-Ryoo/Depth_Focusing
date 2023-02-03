@@ -80,7 +80,11 @@ export const createPhoto = ({
     )
     .then((response) => response.data);
 
-export const getSegmentation = () =>
+interface ILabels {
+  check_labels: number[];
+}
+
+export const getSegmentation = (data: ILabels) =>
   instance
     .post(
       `backend restAPI`,

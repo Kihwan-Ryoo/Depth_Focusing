@@ -18,7 +18,8 @@ interface IViewPhotosProps {
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
   const [firstCheck, setFirstCheck] = useState(false);
   const [segImg, setSegImg] = useState("");
-  const [labels, setLabels] = useState([1, 2, 3, 4, 5, 6, 7]);
+  // 많은 태그가 나오는 경우 해결 X
+  const [labels, setLabels] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const toast = useToast();
   // 백엔드 구현 후 완료될 부분
   // const getSegmentatedImage = useMutation(getSegmentation, {
