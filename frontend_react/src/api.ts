@@ -87,7 +87,7 @@ interface ILabels {
 export const getSegmentation = (data: ILabels) =>
   instance
     .post(
-      `backend restAPI`,
+      `photos/asdasd`,
       { 보낼: String, 인자들: String },
       {
         headers: {

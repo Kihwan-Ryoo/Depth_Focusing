@@ -21,6 +21,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ListFormat } from "typescript";
 import { getSegmentation } from "../api";
+import GetBlurImage from "./GetBlurImage";
 
 interface IChooseLabelProps {
   imageUrl: string;
@@ -33,6 +34,7 @@ interface ILabels {
 
 export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
   const { register, handleSubmit, watch } = useForm<ILabels>();
+  const [next, setNext] = useState(false);
   const toast = useToast();
   const mutation = useMutation(getSegmentation, {
     onSuccess: () => {
@@ -65,34 +67,39 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
           <Image rounded={"lg"} src={imageUrl} />
         </GridItem>
         <GridItem>
-          <FormControl>
-            <VStack
-              spacing={5}
-              align={"center"}
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              {labels?.map((label: number) => (
-                <Checkbox key={label} size={"lg"} {...register("check_labels")}>
+          <VStack
+            ml={20}
+            spacing={5}
+            align={"center"}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            {labels?.map((label: number) => (
+              <FormControl key={label}>
+                <Checkbox size={"lg"} {...register(`check_labels.${label}`)}>
                   {label}
                 </Checkbox>
-              ))}
-            </VStack>
-          </FormControl>
+              </FormControl>
+            ))}
+          </VStack>
         </GridItem>
       </Grid>
       {/* <Text>{watch()}</Text> */}
 
       <Button
         fontSize={25}
-        w={"50%"}
+        w={400}
         h={"14"}
         size={"lg"}
         colorScheme={"teal"}
         variant="solid"
         type="submit"
+        onClick={() => {
+          setNext(true);
+        }}
       >
         Get Focusing Image
       </Button>
+      {next ? <GetBlurImage /> : null}
     </VStack>
   );
 }

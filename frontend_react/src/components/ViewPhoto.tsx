@@ -16,7 +16,7 @@ interface IViewPhotosProps {
 }
 
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
-  const [firstCheck, setFirstCheck] = useState(false);
+  const [next, setNext] = useState(false);
   const [segImg, setSegImg] = useState("");
   // 많은 태그가 나오는 경우 해결 X
   const [labels, setLabels] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -30,7 +30,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
   //       position: "bottom",
   //       isClosable: true,
   //     });
-  //     setFirstCheck(true);
+  //     setNext(true);
   //   },
   // });
 
@@ -45,20 +45,20 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
       <Image rounded={"lg"} src={imageUrl} />
       <Button
         fontSize={25}
-        w={"25%"}
+        w={400}
         h={"14"}
         size={"lg"}
         colorScheme={"teal"}
         variant="solid"
         onClick={() => {
-          setFirstCheck(true);
+          setNext(true);
           // 백엔드 구현 후 활성화될 부분
           // getSegmentatedImage.mutate();
         }}
       >
         Continue
       </Button>
-      {firstCheck ? <ChooseLabel imageUrl={imageUrl} labels={labels} /> : null}
+      {next ? <ChooseLabel imageUrl={imageUrl} labels={labels} /> : null}
     </VStack>
   );
 }
