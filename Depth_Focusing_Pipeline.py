@@ -11,6 +11,7 @@ from matplotlib import cm
 
 def predict_segmentation(image_path):
     image = Image.open(image_path)
+    image = Image.fromarray(np.array(image)[:,:,0:3]) # for input format
     processor = AutoImageProcessor.from_pretrained("facebook/mask2former-swin-base-coco-panoptic")
     model = Mask2FormerForUniversalSegmentation.from_pretrained("facebook/mask2former-swin-base-coco-panoptic")
 
@@ -53,6 +54,7 @@ def blur_image(image_path, label, split_num):
 
     # predict depth of a single pillow image
     img = Image.open(image_path)  # any rgb pillow image
+    img = Image.fromarray(np.array(img)[:,:,0:3]) # for input format
     bin_centers, predicted_depth = infer_helper.predict_pil(img)
     
     # 초점 label을 기준으로 한 depth 차이 맵핑
