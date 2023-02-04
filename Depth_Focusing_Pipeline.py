@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib import cm
 
+<<<<<<< HEAD
 
 def predict_segmentation(image_path):
     image = Image.open(image_path)
@@ -19,6 +20,11 @@ def predict_segmentation(image_path):
     model = Mask2FormerForUniversalSegmentation.from_pretrained(
         "facebook/mask2former-swin-base-coco-panoptic"
     )
+=======
+def predict_segmentation(image):
+    processor = AutoImageProcessor.from_pretrained("facebook/mask2former-swin-base-coco-panoptic")
+    model = Mask2FormerForUniversalSegmentation.from_pretrained("facebook/mask2former-swin-base-coco-panoptic")
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
 
     inputs = processor(image, return_tensors="pt")
 
@@ -32,6 +38,7 @@ def predict_segmentation(image_path):
     return model, predicted_segmentation
 
 
+<<<<<<< HEAD
 def predict_depth(image_path):
     infer_helper = InferenceHelper(dataset="nyu")
 
@@ -40,6 +47,14 @@ def predict_depth(image_path):
     img = Image.fromarray(np.array(img)[:, :, 0:3])  # for input format
     bin_centers, predicted_depth = infer_helper.predict_pil(img)
 
+=======
+def predict_depth(image):
+    infer_helper = InferenceHelper(dataset='nyu')
+    
+    # predict depth of a single pillow image
+    bin_centers, predicted_depth = infer_helper.predict_pil(image)
+    
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
     return predicted_depth
 
 
@@ -70,10 +85,14 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
     print(f"choose a label to be focused (1 ~ {len(segments_info)})")
 
 
+<<<<<<< HEAD
 def blur_image(image_path, predicted_depth, predicted_segmentation, label, split_num):
     img = Image.open(image_path)  # any rgb pillow image
     img = Image.fromarray(np.array(img)[:, :, 0:3])  # for input format
 
+=======
+def blur_image(image, predicted_depth, predicted_segmentation, label, split_num):
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
     # 초점 label을 기준으로 한 depth 차이 맵핑
     depth_std = abs(
         predicted_depth[0][0]
@@ -82,14 +101,20 @@ def blur_image(image_path, predicted_depth, predicted_segmentation, label, split
     dep_max = np.max(depth_std)
 
     channel1_label = predicted_segmentation["segmentation"] == label
+<<<<<<< HEAD
     label3channel = np.repeat(channel1_label[:, :, np.newaxis], 3, -1)
     img_filtered = img * np.array(label3channel)
+=======
+    label3channel = np.repeat(channel1_label[:,:,np.newaxis],3,-1)
+    img_filtered = image * np.array(label3channel)
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
 
     split = np.arange(0, dep_max, dep_max / split_num)
 
-    result = np.zeros(np.array(img).shape)
+    result = np.zeros(np.array(image).shape)
     k = 1
     for i in split:
+<<<<<<< HEAD
         channel1_range = np.logical_and(
             depth_std > i, depth_std <= (i + dep_max / split_num)
         )
@@ -99,6 +124,11 @@ def blur_image(image_path, predicted_depth, predicted_segmentation, label, split
         result = cv2.copyTo(
             cv2.GaussianBlur(np.array(img), (k, k), 3), img_range_mask, result
         )
+=======
+        channel1_range = np.logical_and(depth_std > i, depth_std <= (i + dep_max/split_num))
+        img_range_mask = (np.ones(np.array(image).shape[:-1]) * np.array(channel1_range)).astype(np.uint8)
+        result = cv2.copyTo(cv2.GaussianBlur(np.array(image), (k, k), 3), img_range_mask, result)
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
         k += 2
     result += img_filtered
 
@@ -107,16 +137,31 @@ def blur_image(image_path, predicted_depth, predicted_segmentation, label, split
     plt.show()
 
 
+<<<<<<< HEAD
 image_path = "test_imgs/classroom__rgb_00283.jpg"  # 사용자 입력
 model, predicted_segmentation = predict_segmentation(image_path)
 predicted_depth = predict_depth(
     image_path
 )  # predicted_depth["segmentation"] 사용하면 torch.Tensor로 segmentation 결과 볼 수 있다.
+=======
+image_path = "test_imgs/classroom__rgb_00283.jpg" # 사용자 입력
+image = Image.open(image_path)
+image = Image.fromarray(np.array(image)[:,:,0:3]) # for input format
+model, predicted_segmentation = predict_segmentation(image)
+predicted_depth = predict_depth(image) # predicted_depth["segmentation"] 사용하면 torch.Tensor로 segmentation 결과 볼 수 있다.
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
 
 draw_panoptic_segmentation(model, **predicted_segmentation)
 
 # label = 6
+<<<<<<< HEAD
 label = int(input())  # 사용자 입력
 blurring_power = int(input("please choose the power of blurring (1 ~ 10)\n"))  # 사용자 입력
 split_num = 5 * blurring_power
 blur_image(image_path, predicted_depth, predicted_segmentation, label, split_num)
+=======
+label = int(input()) # 사용자 입력
+blurring_power = int(input("please choose the power of blurring (1 ~ 10)\n")) # 사용자 입력
+split_num = 5 * blurring_power
+blur_image(image, predicted_depth, predicted_segmentation, label, split_num)
+>>>>>>> cd063e55326e09145873e7bf3f31593f77fb0a98
