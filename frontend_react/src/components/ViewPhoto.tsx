@@ -7,9 +7,10 @@ import {
   useMergeRefs,
   Box,
   useBoolean,
+  HStack,
+  IconButton,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { on } from "events";
 import { useState, useRef } from "react";
 import { getSegmentation } from "../api";
 import ChooseLabel from "./ChooseLabel";
@@ -20,6 +21,15 @@ interface IViewPhotosProps {
 }
 
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
+  const scrollReset = useRef<any>(null);
+  const onMoveReset = () => {
+    setTimeout(() => {
+      scrollReset.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
   const scrollRef = useRef<any>(null);
   const onMoveElement = () => {
     setTimeout(() => {
@@ -56,6 +66,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
       align={"center"}
       justifyContent={"space-between"}
       spacing="10"
+      ref={scrollReset}
     >
       <Heading textAlign={"center"}>Selected Image</Heading>
       <Image rounded={"lg"} src={imageUrl} />
@@ -81,6 +92,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
       >
         Continue
       </Button>
+
       {next ? (
         <VStack
           my="10"
@@ -95,7 +107,11 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
           {skeletonFlag ? (
             <ChooseLabelSkeleton />
           ) : (
-            <ChooseLabel segImageUrl={imageUrl} labels={labels} />
+            <ChooseLabel
+              segImageUrl={imageUrl}
+              labels={labels}
+              onMoveReset={onMoveReset}
+            />
           )}
         </VStack>
       ) : null}

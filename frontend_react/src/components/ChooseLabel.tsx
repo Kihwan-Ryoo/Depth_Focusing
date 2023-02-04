@@ -15,18 +15,20 @@ import {
   FormControl,
   useToast,
   CheckboxGroup,
+  IconButton,
 } from "@chakra-ui/react";
 import { Mutation, useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ListFormat } from "typescript";
 import { getBlurImage, getSegmentation } from "../api";
 import GetBlurImage from "./GetBlurImage";
 import GetBlurImageSkeleton from "./GetBlurImageSkeleton";
+import { BiUndo } from "react-icons/bi";
 
 interface IChooseLabelProps {
   segImageUrl: string;
   labels: number[];
+  onMoveReset: any;
 }
 
 interface ILabels {
@@ -36,6 +38,7 @@ interface ILabels {
 export default function ChooseLabel({
   segImageUrl,
   labels,
+  onMoveReset,
 }: IChooseLabelProps) {
   const scrollRef = useRef<HTMLImageElement>(null);
   const onMoveElement = () => {
@@ -93,28 +96,35 @@ export default function ChooseLabel({
           </VStack>
         </GridItem>
       </Grid>
+      <HStack spacing={20}>
+        <Button
+          fontSize={25}
+          w={400}
+          h={"14"}
+          size={"lg"}
+          colorScheme={"teal"}
+          variant="solid"
+          type="submit"
+          onClick={() => {
+            setNext(true);
 
-      <Button
-        fontSize={25}
-        w={400}
-        h={"14"}
-        size={"lg"}
-        colorScheme={"teal"}
-        variant="solid"
-        type="submit"
-        onClick={() => {
-          setNext(true);
+            //skeleton 보기용 (임시)
+            setTimeout(() => {
+              setSkeletonFlag.off();
+            }, 2000);
 
-          //skeleton 보기용 (임시)
-          setTimeout(() => {
-            setSkeletonFlag.off();
-          }, 2000);
-
-          onMoveElement();
-        }}
-      >
-        Get Focusing Image
-      </Button>
+            onMoveElement();
+          }}
+        >
+          Get Focusing Image
+        </Button>
+        <IconButton
+          colorScheme={"red"}
+          aria-label={"choose photo"}
+          icon={<BiUndo size={"lg"} />}
+          onClick={onMoveReset}
+        />
+      </HStack>
       {next ? (
         <VStack p={40}>
           <Heading textAlign={"center"} ref={scrollRef}>
