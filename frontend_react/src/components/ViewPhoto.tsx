@@ -4,10 +4,11 @@ import {
   Button,
   Heading,
   useToast,
+  useMergeRefs,
   Box,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { getSegmentation } from "../api";
 import ChooseLabel from "./ChooseLabel";
 
@@ -16,6 +17,12 @@ interface IViewPhotosProps {
 }
 
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
+  const scrollRef = useRef<HTMLImageElement>(null);
+  const onMoveElement = () => {
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
   const [next, setNext] = useState(false);
   const [segImg, setSegImg] = useState("");
   // 많은 태그가 나오는 경우 해결 X
@@ -54,11 +61,18 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
           setNext(true);
           // 백엔드 구현 후 활성화될 부분
           // getSegmentatedImage.mutate();
+          onMoveElement();
         }}
       >
         Continue
       </Button>
-      {next ? <ChooseLabel imageUrl={imageUrl} labels={labels} /> : null}
+      {next ? (
+        <ChooseLabel
+          imageUrl={imageUrl}
+          labels={labels}
+          scrollRef={scrollRef}
+        />
+      ) : null}
     </VStack>
   );
 }

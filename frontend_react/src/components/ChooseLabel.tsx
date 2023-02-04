@@ -17,7 +17,7 @@ import {
   CheckboxGroup,
 } from "@chakra-ui/react";
 import { Mutation, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ListFormat } from "typescript";
 import { getSegmentation } from "../api";
@@ -26,15 +26,22 @@ import GetBlurImage from "./GetBlurImage";
 interface IChooseLabelProps {
   imageUrl: string;
   labels: number[];
+  scrollRef: any;
 }
 
 interface ILabels {
   check_labels: number[];
 }
 
-export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
+export default function ChooseLabel({
+  imageUrl,
+  labels,
+  scrollRef,
+}: IChooseLabelProps) {
   const { register, handleSubmit, watch } = useForm<ILabels>();
   const [next, setNext] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+  useEffect(() => {}, [imageLoading]);
   const toast = useToast();
   const mutation = useMutation(getSegmentation, {
     onSuccess: () => {
@@ -51,7 +58,6 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
     console.log("asd");
     mutation.mutate(data);
   };
-  console.log(watch());
   return (
     <VStack
       my="10"
@@ -60,7 +66,9 @@ export default function ChooseLabel({ imageUrl, labels }: IChooseLabelProps) {
       spacing="10"
       p={20}
     >
-      <Heading textAlign={"center"}>Selected label</Heading>
+      <Heading textAlign={"center"} ref={scrollRef}>
+        Selected label
+      </Heading>
       <Grid templateColumns={"5fr 1fr"}>
         <GridItem>
           <Image rounded={"lg"} src={imageUrl} />
