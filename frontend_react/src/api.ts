@@ -80,15 +80,11 @@ export const createPhoto = ({
     )
     .then((response) => response.data);
 
-interface ILabels {
-  check_labels: number[];
-}
-
-export const getSegmentation = (data: ILabels) =>
+export const getSegmentation = (ok: boolean) =>
   instance
     .post(
       `photos/asdasd`,
-      { 보낼: String, 인자들: String },
+      { ok },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",
@@ -97,7 +93,7 @@ export const getSegmentation = (data: ILabels) =>
     )
     .then((response) => response.data);
 
-export const getBlurImage = () =>
+export const getBlurImage = ({ check_labels }: any) =>
   instance
     .post(
       `backend restAPI`,

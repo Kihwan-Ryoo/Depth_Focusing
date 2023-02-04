@@ -6,23 +6,31 @@ import {
   useToast,
   useMergeRefs,
   Box,
+  useBoolean,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
+import { on } from "events";
 import { useState, useRef } from "react";
 import { getSegmentation } from "../api";
 import ChooseLabel from "./ChooseLabel";
+import ChooseLabelSkeleton from "./ChooseLabelSkeleton";
 
 interface IViewPhotosProps {
   imageUrl: string;
 }
 
 export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
-  const scrollRef = useRef<HTMLImageElement>(null);
+  const scrollRef = useRef<any>(null);
   const onMoveElement = () => {
     setTimeout(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      scrollRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
+
+  const [skeletonFlag, setSkeletonFlag] = useBoolean(true);
   const [next, setNext] = useState(false);
   const [segImg, setSegImg] = useState("");
   // 많은 태그가 나오는 경우 해결 X
@@ -38,6 +46,7 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
         isClosable: true,
       });
       setNext(true);
+      setSkeletonFlag.off();
     },
   });
 
@@ -61,17 +70,34 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
           setNext(true);
           // 백엔드 구현 후 활성화될 부분
           // getSegmentatedImage.mutate();
+
+          //skeleton 보기용 (임시)
+          setTimeout(() => {
+            setSkeletonFlag.off();
+          }, 2000);
+
           onMoveElement();
         }}
       >
         Continue
       </Button>
       {next ? (
-        <ChooseLabel
-          imageUrl={imageUrl}
-          labels={labels}
-          scrollRef={scrollRef}
-        />
+        <VStack
+          my="10"
+          align={"center"}
+          justifyContent={"space-between"}
+          spacing="10"
+          p={20}
+        >
+          <Heading textAlign={"center"} ref={scrollRef}>
+            Selected label
+          </Heading>
+          {skeletonFlag ? (
+            <ChooseLabelSkeleton />
+          ) : (
+            <ChooseLabel segImageUrl={imageUrl} labels={labels} />
+          )}
+        </VStack>
       ) : null}
     </VStack>
   );

@@ -17,16 +17,16 @@ import {
   CheckboxGroup,
 } from "@chakra-ui/react";
 import { Mutation, useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ListFormat } from "typescript";
-import { getSegmentation } from "../api";
+import { getBlurImage, getSegmentation } from "../api";
 import GetBlurImage from "./GetBlurImage";
+import GetBlurImageSkeleton from "./GetBlurImageSkeleton";
 
 interface IChooseLabelProps {
-  imageUrl: string;
+  segImageUrl: string;
   labels: number[];
-  scrollRef: any;
 }
 
 interface ILabels {
@@ -34,23 +34,30 @@ interface ILabels {
 }
 
 export default function ChooseLabel({
-  imageUrl,
+  segImageUrl,
   labels,
-  scrollRef,
 }: IChooseLabelProps) {
+  const scrollRef = useRef<HTMLImageElement>(null);
+  const onMoveElement = () => {
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+  const [skeletonFlag, setSkeletonFlag] = useBoolean(true);
+
   const { register, handleSubmit, watch } = useForm<ILabels>();
   const [next, setNext] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
-  useEffect(() => {}, [imageLoading]);
   const toast = useToast();
-  const mutation = useMutation(getSegmentation, {
+  const mutation = useMutation(getBlurImage, {
     onSuccess: () => {
       toast({
         status: "success",
         title: "seg",
         position: "bottom-right",
       });
-      // navigate(`/rooms/${data.id}`);
     },
   });
 
@@ -64,14 +71,10 @@ export default function ChooseLabel({
       align={"center"}
       justifyContent={"space-between"}
       spacing="10"
-      p={20}
     >
-      <Heading textAlign={"center"} ref={scrollRef}>
-        Selected label
-      </Heading>
       <Grid templateColumns={"5fr 1fr"}>
         <GridItem>
-          <Image rounded={"lg"} src={imageUrl} />
+          <Image rounded={"lg"} src={segImageUrl} />
         </GridItem>
         <GridItem>
           <VStack
@@ -90,7 +93,6 @@ export default function ChooseLabel({
           </VStack>
         </GridItem>
       </Grid>
-      {/* <Text>{watch()}</Text> */}
 
       <Button
         fontSize={25}
@@ -102,11 +104,29 @@ export default function ChooseLabel({
         type="submit"
         onClick={() => {
           setNext(true);
+
+          //skeleton 보기용 (임시)
+          setTimeout(() => {
+            setSkeletonFlag.off();
+          }, 2000);
+
+          onMoveElement();
         }}
       >
         Get Focusing Image
       </Button>
-      {next ? <GetBlurImage /> : null}
+      {next ? (
+        <VStack p={40}>
+          <Heading textAlign={"center"} ref={scrollRef}>
+            Blur Image
+          </Heading>
+          {skeletonFlag ? (
+            <GetBlurImageSkeleton />
+          ) : (
+            <GetBlurImage blurImageURL={segImageUrl} />
+          )}
+        </VStack>
+      ) : null}
     </VStack>
   );
 }

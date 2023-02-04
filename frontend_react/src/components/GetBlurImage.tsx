@@ -21,11 +21,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ListFormat } from "typescript";
 
+interface IGetBlurImageProps {
+  blurImageURL: string;
+}
+
 interface ILabels {
+  blurImageURL: string;
   check_labels: number[];
 }
 
-export default function ChooseLabel() {
+export default function GetBlurImage({ blurImageURL }: IGetBlurImageProps) {
   const toast = useToast();
 
   return (
@@ -34,10 +39,9 @@ export default function ChooseLabel() {
       align={"center"}
       justifyContent={"space-between"}
       spacing="10"
-      p={40}
+      p={10}
     >
-      <Heading textAlign={"center"}>Blur Image</Heading>
-      <Image rounded={"lg"} src="#" />
+      <Image rounded={"lg"} src={blurImageURL} />
       <HStack spacing={20}>
         <Button
           fontSize={25}
