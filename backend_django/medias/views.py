@@ -42,6 +42,7 @@ class GetUploadURL(APIView):
         )
 
         one_time_url = one_time_url.json()
+        # result.get("uploadURL") : 유저에게 할당해주는 이미지 업로드용 url
         result = one_time_url.get("result")
         return Response({"uploadURL": result.get("uploadURL")})
 
