@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { createPhoto, getUploadURL, uploadImage } from "../api";
 import ProtectedPage from "../components/ProtectedPage";
 import ViewPhoto from "../components/ViewPhoto";
+import { Helmet } from "react-helmet";
 
 interface IForm {
   file: FileList;
@@ -55,6 +56,9 @@ export default function UploadPhotos() {
   });
   const uploadURLMutation = useMutation(getUploadURL, {
     onSuccess: (data: IUploadURLResponse) => {
+      console.log(typeof data.uploadURL, typeof watch("file"));
+      console.log(watch());
+
       uploadImageMutation.mutate({
         uploadURL: data.uploadURL,
         file: watch("file"),
@@ -66,6 +70,10 @@ export default function UploadPhotos() {
   };
   return (
     <ProtectedPage>
+      <Helmet>
+        <title>Get Blur Image</title>
+      </Helmet>
+
       {createPhotoMutation.isSuccess ? (
         <ViewPhoto imageUrl={imageUrl} />
       ) : (

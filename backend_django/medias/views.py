@@ -67,6 +67,8 @@ class GetDeepLearningImage(APIView):
 
 
 class GetBlurImage(APIView):
+    
+    
     def post(self, request):
         "라벨번호, segmentation 이미지, depthmap 이미지 를 가지고 블러이미지를 만들어서 반환"
         pass
