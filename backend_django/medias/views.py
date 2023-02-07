@@ -11,7 +11,7 @@ from users import serializers
 from users.models import User
 from .models import Photo
 from .serializers import PhotoSerializer
-
+from .segmentation import predict_segmentation, draw_panoptic_segmentation
 
 class PhotoDetail(APIView):
 
@@ -62,10 +62,24 @@ class GetDeepLearningImage(APIView):
         # user => photo
 
         serializer = PhotoSerializer(
-            user.photos.filter(),
+            user.photos.filter(len(user.photos))
+        )
+        img_url = serializer.file
+        segmentation, segmentation_info, model = predict_segmentation(img_url)
+        draw_panoptic_segmentation(model, segmentation, segmentation_info)
+        one_time_url = requests.post(
+            f"https://api.cloudflare.com/client/v4/accounts/{settings.CF_ID}/images/v2/direct_upload",
+            headers={
+                "Authorization": f"Bearer {settings.CF_TOKEN}",
+            },
         )
 
-
+        one_time_url = one_time_url.json()
+        # result.get("uploadURL") : 유저에게 할당해주는 이미지 업로드용 url
+        result = one_time_url.get("result")
+        r = requests.post(result.get("uploadURL"),files='../../tmp_img/segmentation.png')
+        serializer.seg_file = r['result']['variants']
+        
 class GetBlurImage(APIView):
     def post(self, request):
         "라벨번호, segmentation 이미지, depthmap 이미지 를 가지고 블러이미지를 만들어서 반환"
