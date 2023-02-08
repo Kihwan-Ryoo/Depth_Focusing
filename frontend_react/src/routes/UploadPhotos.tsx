@@ -46,6 +46,7 @@ export default function UploadPhotos() {
     onSuccess: ({ result }: any) => {
       if (userPk) {
         setImageUrl(`${result.variants[0]}`);
+        console.log(result);
         createPhotoMutation.mutate({
           description: "from react",
           file: `https://imagedelivery.net/QuZC_XPqQ0puEDGDCfsphg/${result.id}/public`,

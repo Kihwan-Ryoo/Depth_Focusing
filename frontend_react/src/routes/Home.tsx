@@ -4,8 +4,10 @@ import {
   useColorMode,
   useColorModeValue,
   VStack,
+  Heading,
 } from "@chakra-ui/react";
 import { Helmet } from "react-helmet";
+import ExplainaionCarousel from "../components/ExplainaionCarousel";
 
 export default function Home() {
   return (
@@ -13,7 +15,12 @@ export default function Home() {
       <Helmet>
         <title>Home</title>
       </Helmet>
-      <Text fontSize={"9xl"}>No Items...</Text>
+      <Heading mb={5}>
+        <Text>Upload Guide</Text>
+      </Heading>
+      <ExplainaionCarousel />
+
+      {/* <Text fontSize={"9xl"}>No Items...</Text> */}
     </VStack>
   );
 }
