@@ -13,6 +13,7 @@ from .models import Photo
 from .serializers import PhotoSerializer
 from .segmentation import predict_segmentation, draw_panoptic_segmentation
 
+
 class PhotoDetail(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -49,23 +50,29 @@ class GetUploadURL(APIView):
 
 # 우석님 파트
 class GetDeepLearningImage(APIView):
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise NotFound
+
     def post(self, request):
         # 이미지를 받아서 딥러닝 모델을 돌려준 결과를 response(프론트엔드에게)
 
-        def get_object(self, pk):
-            try:
-                return User.objects.get(pk=pk)
-            except User.DoesNotExist:
-                raise NotFound
-
         user = self.get_object(1)
         # user => photo
-
-        serializer = PhotoSerializer(
-            user.photos.filter(len(user.photos))
-        )
-        img_url = serializer.file
+        print()
+        print()
+        print(user)
+        serializer = PhotoSerializer(user.photos.filter(len(user.photos)))
+        img_url = serializer.data.get("file")
+        print()
+        print()
+        print(img_url)
         segmentation, segmentation_info, model = predict_segmentation(img_url)
+        print()
+        print()
+        print(segmentation_info)
         draw_panoptic_segmentation(model, segmentation, segmentation_info)
         one_time_url = requests.post(
             f"https://api.cloudflare.com/client/v4/accounts/{settings.CF_ID}/images/v2/direct_upload",
@@ -75,11 +82,24 @@ class GetDeepLearningImage(APIView):
         )
 
         one_time_url = one_time_url.json()
+        print()
+        print()
+        print(one_time_url)
+        print()
+        print()
         # result.get("uploadURL") : 유저에게 할당해주는 이미지 업로드용 url
         result = one_time_url.get("result")
-        r = requests.post(result.get("uploadURL"),files='../../tmp_img/segmentation.png')
-        serializer.seg_file = r['result']['variants']
-        
+        print(result)
+        print()
+        print()
+
+        r = requests.post(
+            result.get("uploadURL"), files="../../tmp_img/segmentation.png"
+        )
+        serializer.seg_file = r["result"]["variants"]
+        return Response()
+
+
 class GetBlurImage(APIView):
     def post(self, request):
         "라벨번호, segmentation 이미지, depthmap 이미지 를 가지고 블러이미지를 만들어서 반환"

@@ -160,14 +160,12 @@ class UserPhotos(APIView):
             raise exceptions.NotAuthenticated
 
         seralizer = PhotoSerializer(data=request.data)
-        print(f"request data : {request.data}")
 
         if seralizer.is_valid():
             photo = seralizer.save(
                 user=user,
             )
             seralizer = PhotoSerializer(photo)
-            print(seralizer.data)
             return Response(seralizer.data)
         else:
             return Response(seralizer.errors)
