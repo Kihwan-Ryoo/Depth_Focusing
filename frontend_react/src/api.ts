@@ -84,7 +84,7 @@ export const getSegmentation = () =>
   instance
     .post(
       `medias/photos/asdasd`,
-      { pk: 80 },
+      { pk: 97 },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",

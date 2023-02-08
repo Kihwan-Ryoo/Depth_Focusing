@@ -28,7 +28,7 @@ def predict_segmentation(img_url):
     print(predicted_segmentation.keys())  # dict_keys(['segmentation', 'segments_info'])
     return (
         predicted_segmentation["segmentation"],
-        predicted_segmentation["segmentation_info"],
+        predicted_segmentation["segments_info"],
         model,
     )
 
@@ -56,4 +56,7 @@ def draw_panoptic_segmentation(model, segmentation, segments_info):
     ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1, 0.5))
 
     plt.axis("off")
-    plt.savefig("../../tmp_img/segmentation.png", format="png")
+    plt.savefig(
+        "segmentation.png",
+        format="png",
+    )
