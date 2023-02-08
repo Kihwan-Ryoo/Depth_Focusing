@@ -88,12 +88,12 @@ export default function ViewPhoto({ imageUrl }: IViewPhotosProps) {
         onClick={() => {
           setNext(true);
           // 백엔드 구현 후 활성화될 부분
-          // getSegmentatedImage.mutate();
+          getSegmentatedImage.mutate();
 
-          //skeleton 보기용 (임시)
-          setTimeout(() => {
-            setSkeletonFlag.off();
-          }, 2000);
+          // //skeleton 보기용 (임시)
+          // setTimeout(() => {
+          //   setSkeletonFlag.off();
+          // }, 2000);
 
           onMoveElement();
         }}

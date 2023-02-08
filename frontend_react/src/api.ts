@@ -80,11 +80,11 @@ export const createPhoto = ({
     )
     .then((response) => response.data);
 
-export const getSegmentation = (ok: boolean) =>
+export const getSegmentation = () =>
   instance
     .post(
-      `photos/asdasd`,
-      { ok },
+      `medias/photos/asdasd`,
+      { pk: 80 },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",
